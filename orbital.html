@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Orbital - N-body Gravity</title>
+<meta name="description" content="A Newtonian N-body gravity simulator in plain JavaScript: Euler, Velocity Verlet and RK4 integrators, Barnes-Hut, live energy drift graph. Runs in any browser, desktop or phone.">
+<meta name="theme-color" content="#04051a">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Orbital - N-body Gravity">
+<meta property="og:description" content="A Newtonian N-body gravity simulator in plain JavaScript: Euler, Velocity Verlet and RK4 integrators, Barnes-Hut, live energy drift graph. Runs in any browser, desktop or phone.">
+<meta name="twitter:card" content="summary">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 48 48%27%3E%3Crect width=%2748%27 height=%2748%27 rx=%2710%27 fill=%27%2304051a%27/%3E%3Cellipse cx=%2724%27 cy=%2724%27 rx=%2720%27 ry=%278%27 transform=%27rotate(-30 24 24)%27 fill=%27none%27 stroke=%27%2322d3ee%27 stroke-width=%273%27/%3E%3Ccircle cx=%2724%27 cy=%2724%27 r=%277%27 fill=%27%23a78bfa%27/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&family=JetBrains+Mono:wght@500&display=swap">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<main>
+<header class="fade" style="--i:0">
+<div class="brand"><svg class="logo" viewBox="0 0 48 48" fill="none" stroke="url(#lg)" stroke-width="2.2" stroke-linecap="round"><defs><linearGradient id="lg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#22d3ee"/><stop offset="1" stop-color="#a78bfa"/></linearGradient></defs><circle cx="24" cy="24" r="6" fill="url(#lg)"/><ellipse cx="24" cy="24" rx="20" ry="8" transform="rotate(-30 24 24)"/><circle cx="40" cy="14" r="2.4" fill="#f0abfc" stroke="none"/></svg><div><h1>ORBITAL / N-BODY</h1><p class="sub">Newtonian gravity in normalized units (G = 1). Pick an integrator and watch the energy drift.</p></div></div>
+<div class="tags" style="flex-basis:100%;width:100%"><span class="tag">Velocity Verlet</span><span class="tag">RK4</span><span class="tag">Barnes-Hut</span><span class="tag">Momentum-conserving merge</span><a class="tag" href="index.html">&larr; Rigid body mode</a></div>
+</header>
+<section class="stage fade" style="--i:1" id="stage">
+<canvas id="o" role="img" aria-label="Interactive N-body gravity simulation: drag to launch a body, click a body to follow it, pinch or scroll to zoom"></canvas>
+<div class="hud"><div>BODIES<b id="sb">0</b></div><div>E DRIFT<b id="se">0%</b></div><div>FPS<b id="sf">0</b></div></div>
+<div class="badge" id="badge"></div>
+<canvas id="eg" class="graph" aria-hidden="true"></canvas><div class="selinfo" id="sel"></div>
+<div class="hint">Drag to launch &middot; click a body to follow<span class="dk"> &middot; scroll to zoom</span></div>
+</section>
+<section class="panel">
+<div class="card fade" style="--i:2"><h2>Scenario</h2>
+<div class="seg" id="pre"><button data-p="solar" class="on">Solar</button><button data-p="binary">Binary</button><button data-p="figure8">Figure-8</button><button data-p="belt">Belt</button><button data-p="moons">Moons</button></div>
+<h2 class="sp">Integrator</h2>
+<div class="seg" id="seg"><button data-m="euler">Euler</button><button data-m="verlet" class="on">Verlet</button><button data-m="rk4">RK4</button></div>
+<label class="ctl"><div class="t">Step size dt<span id="dv">0.10</span></div><input id="dt" type="range" min="0.02" max="0.5" step="0.01" value="0.1"></label>
+</div>
+<div class="card fade" style="--i:3"><h2>Time warp</h2>
+<label class="ctl"><div class="t">Speed<span id="tv">1.00x</span></div><input id="tsl" type="range" min="0.05" max="10" step="0.05" value="1"></label>
+<div class="btns"><button class="btn" id="bPause" aria-pressed="false"><span>Pause</span><kbd>Space</kbd></button><button class="btn" id="bSlow">Slow-mo<kbd>S</kbd></button></div>
+</div>
+<div class="card fade" style="--i:4"><h2>Spawn</h2>
+<label class="ctl"><div class="t">Mass<span id="mv">1.0</span></div><input id="mass" type="range" min="0.1" max="60" step="0.1" value="1"></label>
+<div class="btns three"><button class="btn" id="bDeb">+200 debris</button><button class="btn" id="bRst">Restart</button><button class="btn" id="bClr">Clear<kbd>C</kbd></button></div>
+<div class="btns three"><button class="btn" id="bZo">Zoom &minus;<kbd>-</kbd></button><button class="btn" id="bZi">Zoom +<kbd>+</kbd></button><button class="btn" id="bFit">Reset view<kbd>0</kbd></button></div>
+<label class="sw">Orbit trails<input type="checkbox" id="trl" checked><i></i></label>
+</div>
+</section>
+<p class="note fade" style="--i:5">Switch to Euler and watch E DRIFT climb and orbits spiral outward; Verlet and RK4 stay stable. Merged bodies conserve linear momentum, so energy is intentionally rebaselined on each merge.</p>
+</main>
+<script type="module" src="src/orbital-app/main.js"></script>
+</body>
+</html>

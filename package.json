@@ -1,0 +1,13 @@
+{
+  "name": "orbital-physics-engine",
+  "version": "1.0.0",
+  "description": "2D rigid body engine and N-body gravity simulator in plain JavaScript. No dependencies, no build step.",
+  "license": "MIT",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node tests/orbital-physics.test.js && node tests/rigid-physics.test.js",
+    "start": "python3 -m http.server 8000"
+  },
+  "engines": { "node": ">=18" }
+}

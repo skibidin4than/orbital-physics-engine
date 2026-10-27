@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Orbital - 2D Physics Engine</title>
+<meta name="description" content="A 2D rigid body physics engine written from scratch in plain JavaScript: SAT collision, sequential impulses, friction. Runs in any browser, desktop or phone.">
+<meta name="theme-color" content="#04051a">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Orbital - 2D Physics Engine">
+<meta property="og:description" content="A 2D rigid body physics engine written from scratch in plain JavaScript: SAT collision, sequential impulses, friction. Runs in any browser, desktop or phone.">
+<meta name="twitter:card" content="summary">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 48 48%27%3E%3Crect width=%2748%27 height=%2748%27 rx=%2710%27 fill=%27%2304051a%27/%3E%3Cellipse cx=%2724%27 cy=%2724%27 rx=%2720%27 ry=%278%27 transform=%27rotate(-30 24 24)%27 fill=%27none%27 stroke=%27%2322d3ee%27 stroke-width=%273%27/%3E%3Ccircle cx=%2724%27 cy=%2724%27 r=%277%27 fill=%27%23a78bfa%27/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&family=JetBrains+Mono:wght@500&display=swap">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<main>
+<header class="fade" style="--i:0">
+<div class="brand">
+<svg class="logo" viewBox="0 0 48 48" fill="none" stroke="url(#lg)" stroke-width="2.2" stroke-linecap="round"><defs><linearGradient id="lg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#22d3ee"/><stop offset="1" stop-color="#a78bfa"/></linearGradient></defs><circle cx="24" cy="24" r="6" fill="url(#lg)"/><ellipse cx="24" cy="24" rx="20" ry="8" transform="rotate(-30 24 24)"/><circle cx="40" cy="14" r="2.4" fill="#f0abfc" stroke="none"/></svg>
+<div><h1>ORBITAL</h1><p class="sub">A 2D rigid body physics engine written from scratch. No Box2D, no Matter.js.</p></div>
+</div>
+<div class="tags"><span class="tag">SAT collision</span><span class="tag">Sequential impulse</span><span class="tag">Coulomb friction</span><span class="tag">Spatial hash</span><span class="tag">Warm starting</span><a class="tag" href="orbital.html">Orbital mode &rarr;</a></div>
+</header>
+
+<section class="stage fade" style="--i:1" id="stage">
+<canvas id="c" role="img" aria-label="Interactive 2D rigid body simulation: drag shapes to fling them, or drag on empty space to launch a new one"></canvas>
+<div class="hud"><div>BODIES<b id="sb">0</b></div><div>CONTACTS<b id="sc">0</b></div><div>FPS<b id="sf">0</b></div></div>
+<div class="badge" id="badge"></div>
+<div class="hint">Drag an object to fling it, or drag on empty space to launch a new one</div>
+</section>
+
+<section class="panel">
+<div class="card fade" style="--i:2"><h2>Spawn</h2>
+<div class="btns shapes"><button class="btn" id="bBox">Crate</button><button class="btn" id="bOrb">Orb</button><button class="btn" id="bTri">Tri</button><button class="btn" id="bPen">Pent</button><button class="btn" id="bHex">Hex</button><button class="btn" id="bPyr">Pyramid</button><button class="btn" id="bRain">Rain</button><button class="btn" id="bClr">Clear</button></div></div>
+<div class="card fade" style="--i:3"><h2>Gravity</h2>
+<div class="seg" id="seg"><button data-g="0">Zero-G</button><button data-g="0.17">Moon</button><button data-g="0.38">Mars</button><button data-g="1" class="on">Earth</button><button data-g="2.5">Jupiter</button></div>
+<label class="ctl"><div class="t">Strength<span id="gv">1.00 g</span></div><input id="grav" type="range" min="0" max="2.5" step="0.01" value="1"></label>
+</div>
+<div class="card fade" style="--i:4"><h2>Material</h2>
+<label class="ctl"><div class="t">Bounciness<span id="rv">0.35</span></div><input id="rest" type="range" min="0" max="0.95" step="0.05" value="0.35"></label>
+<label class="ctl"><div class="t">Friction<span id="fv">0.50</span></div><input id="fric" type="range" min="0" max="1" step="0.05" value="0.5"></label>
+<label class="sw">Debug view<input type="checkbox" id="dbg"><i></i></label>
+</div>
+<div class="card fade" style="--i:5"><h2>Time</h2>
+<div class="btns three tight">
+<button class="btn" id="bPause" aria-pressed="false"><svg viewBox="0 0 24 24"><path d="M8 5v14M16 5v14"/></svg><span>Pause</span><kbd>Space</kbd></button>
+<button class="btn" id="bSlow" aria-pressed="false"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><path d="M12 7v5l3 2"/></svg>Slow-mo<kbd>S</kbd></button>
+<button class="btn" id="bStep"><svg viewBox="0 0 24 24"><path d="M6 5l9 7-9 7zM18 5v14"/></svg>Step<kbd>N</kbd></button>
+</div>
+<label class="ctl"><div class="t">Time scale<span id="tv">1.00x</span></div><input id="tsl" type="range" min="0.1" max="3" step="0.05" value="1"></label></div>
+</section>
+<p class="note fade" style="--i:6">Semi-implicit Euler integration, spatial-hash broad phase, warm-started solver, SAT for box collisions, analytic orb contacts, accumulated-impulse solver with Coulomb friction and restitution, 4 substeps per frame.</p>
+</main>
+<script type="module" src="src/rigid-app/main.js"></script>
+</body>
+</html>
